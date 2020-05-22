@@ -13,6 +13,10 @@ datasetList = dir(datasetPath);
 datasetList(1:2) = [];
 
 
+% load unique WiFi RSSID Map
+load([datasetPath '/uniqueWiFiAPsBSSID.mat']);
+
+
 % load Tango VIO data
 numDatasetList = 55;
 datasetTangoVIO = cell(1,numDatasetList);
@@ -22,7 +26,7 @@ for k = 1:numDatasetList
     datasetDirectory = [datasetPath '\' datasetList(k).name];
     TangoVIOInterval = 100;   % 200 Hz
     accuracyThreshold = 25;   % in meter
-    TangoVIO = extractTangoVIOCentricData(datasetDirectory, TangoVIOInterval, accuracyThreshold);
+    TangoVIO = extractTangoVIOCentricData(datasetDirectory, TangoVIOInterval, accuracyThreshold, uniqueWiFiAPsBSSID);
     
     
     % save Tango VIO
@@ -66,6 +70,10 @@ for k = 1:numDatasetList
     [TangoVIO] = optimizeEachTangoVIO(TangoVIO);
     datasetTangoVIO{k} = TangoVIO;
 end
+
+
+% save the variables
+save('datasetTangoVIO.mat','datasetTangoVIO');
 
 
 % optimized Tango VIO visualization

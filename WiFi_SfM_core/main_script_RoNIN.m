@@ -8,9 +8,13 @@ dbstop if error;
 %% 1) load RoNIN IO data
 
 % choose dataset path
-datasetPath = 'data';
+datasetPath = '../data';
 datasetList = dir(datasetPath);
 datasetList(1:2) = [];
+
+
+% load unique WiFi RSSID Map
+load([datasetPath '/uniqueWiFiAPsBSSID.mat']);
 
 
 % load RoNIN IO data
@@ -22,7 +26,7 @@ for k = 1:numDatasetList
     datasetDirectory = [datasetPath '\' datasetList(k).name];
     roninInterval = 200;          % 1 Hz
     roninYawRotation = 0;       % degree
-    RoninIO = extractRoninCentricData(datasetDirectory, roninInterval, roninYawRotation, 25.0);
+    RoninIO = extractRoninCentricData(datasetDirectory, roninInterval, roninYawRotation, 25.0, uniqueWiFiAPsBSSID);
     
     
     % save RoNIN IO
@@ -66,6 +70,10 @@ for k = 1:numDatasetList
     [RoninIO] = optimizeEachRoninIO(RoninIO);
     datasetRoninIO{k} = RoninIO;
 end
+
+
+% save the variables
+save('datasetRoninIO.mat','datasetRoninIO');
 
 
 % optimized RoNIN IO visualization
